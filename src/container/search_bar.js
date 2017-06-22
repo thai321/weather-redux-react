@@ -1,6 +1,12 @@
+// Search bar is the controller, no need to care about the state
+// only binding the action
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { fetchWeather } from '../actions/index';
 
-export default class SearchBar extends Component {
+
+class SearchBar extends Component {
   constructor(props) {
     super(props);
 
@@ -8,6 +14,8 @@ export default class SearchBar extends Component {
     this.onInputChange = this.onInputChange.bind(this);
                           // bind this of SearchBar
                           // overwrite the method
+
+    this.onFormSubmit = this.onFormSubmit.bind(this);
   }
 
   onInputChange(event) { // event happen when we press a key
@@ -19,6 +27,11 @@ export default class SearchBar extends Component {
     event.preventDefault() // don't submit the form
 
     // We need to go and fetch weather data
+    this.props.fetchWeather(this.state.term);
+    this.setState({term: ''}); // the search bar will reload to
+    // emptry string
+
+
   } // we use form since it suppose enter key
 
   render() {
@@ -38,3 +51,12 @@ export default class SearchBar extends Component {
     );
   }
 }
+
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({fetchWeather}, dispatch);
+}
+
+export default connect(null, mapDispatchToProps)(SearchBar)
+// null here is suppose for the state to prop, but since we don't
+//care about changing any state we just put null
